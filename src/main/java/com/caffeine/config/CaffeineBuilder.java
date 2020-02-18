@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.support.SimpleCacheManager;
 
@@ -14,12 +16,14 @@ import com.github.benmanes.caffeine.cache.RemovalListener;
 
 public class CaffeineBuilder extends SimpleCacheManager implements Serializable, Cloneable {
 
+	private static final Log LOGGER = LogFactory.getLog(CaffeineBuilder.class);
 	private static final long serialVersionUID = 5236002029735771778L;
 	private static volatile CaffeineBuilder caffeineBuilder = null;
 
 	private CaffeineBuilder() {
 		// Preventing attack by Reflection APIs
 		if (caffeineBuilder != null) {
+			LOGGER.error("Cant instantiate single object using constrictor");
 			throw new RuntimeException("Cant instantiate single object using constrictor");
 		}
 	}
@@ -41,6 +45,7 @@ public class CaffeineBuilder extends SimpleCacheManager implements Serializable,
 				}
 			}
 		}
+		LOGGER.debug("CaffeineBuilder created.");
 		return caffeineBuilder;
 	}
 
@@ -64,9 +69,10 @@ public class CaffeineBuilder extends SimpleCacheManager implements Serializable,
 }
 
 class CustomRemovalListener implements RemovalListener<Object, Object> {
+	private static final Log LOGGER = LogFactory.getLog(CustomRemovalListener.class);
+	
 	@Override
 	public void onRemoval(Object key, Object value, RemovalCause cause) {
-		System.out.println(key);
-		System.out.println(cause);
+		LOGGER.info(key + " : " + cause);
 	}
 }

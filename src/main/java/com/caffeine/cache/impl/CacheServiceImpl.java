@@ -2,6 +2,8 @@ package com.caffeine.cache.impl;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.CacheManager;
@@ -9,13 +11,14 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
-import com.caffeine.cache.CacheSerevice;
+import com.caffeine.cache.CacheService;
 import com.caffeine.constant.CaffeineConstants;
 import com.rits.cloning.Cloner;
 
 @Service
-public class CacheServiceImpl implements CacheSerevice {
+public class CacheServiceImpl implements CacheService {
 
+	private static final Log LOGGER = LogFactory.getLog(CacheServiceImpl.class);
 	private static Cloner cloner = new Cloner();
 
 	@Autowired
@@ -25,6 +28,7 @@ public class CacheServiceImpl implements CacheSerevice {
 	@Caching(evict = {
 			@CacheEvict(value = { CaffeineConstants.CACHE1, CaffeineConstants.CACHE2, CaffeineConstants.CACHE3 }, allEntries = true) })
 	public String clearAllCaches() {
+		LOGGER.debug("Cleared all caches");
 		return CaffeineConstants.SUCCESS;
 	}
 
@@ -32,6 +36,7 @@ public class CacheServiceImpl implements CacheSerevice {
 	public void clearSingleCache(String cacheName) {
 		if (getCache(cacheName) != null) {
 			getCache(cacheName).clear();
+			LOGGER.debug("Cleared the cache: " + cacheName);
 		}
 	}
 

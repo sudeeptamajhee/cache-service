@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.caffeine.cache.CacheSerevice;
+import com.caffeine.cache.CacheService;
 import com.caffeine.config.CaffeineConfig;
 import com.caffeine.constant.CaffeineConstants;
 
@@ -15,14 +15,14 @@ public class App {
 	public static void main(String[] args) {
 		System.setProperty("cache.app.name", "SM");
 		ApplicationContext context = new AnnotationConfigApplicationContext(CaffeineConfig.class);
-		CacheSerevice cacheSerevice = (CacheSerevice)context.getBean(CacheSerevice.class);
+		CacheService cacheSerevice = (CacheService)context.getBean(CacheService.class);
 
 		App app = new App();
 		app.execute(cacheSerevice);
 		((AnnotationConfigApplicationContext)context).close();
 	}
 
-	private void execute(CacheSerevice cacheSerevice) {
+	private void execute(CacheService cacheSerevice) {
 		cacheSerevice.put(CaffeineConstants.CACHE1, "caffeine-key-1", "caffeine-value-1");
 		cacheSerevice.put(CaffeineConstants.CACHE1, "caffeine-key-2", "caffeine-value-2");
 		
